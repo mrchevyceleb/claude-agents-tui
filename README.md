@@ -1,4 +1,4 @@
-# 🤖 Claude Agent Monitor
+# 🤖 Claude Agents TUI
 
 **A beautiful terminal dashboard for monitoring Claude Code background agents in real-time.**
 
@@ -58,8 +58,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/claude-agent-monitor.git
-cd claude-agent-monitor
+git clone https://github.com/mrchevyceleb/claude-agents-tui.git
+cd claude-agents-tui
 
 # Run the installer
 ./install.sh
@@ -322,9 +322,9 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 📬 Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/claude-agent-monitor/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/claude-agent-monitor/discussions)
-- **Twitter**: [@yourusername](https://twitter.com/yourusername)
+- **Issues**: [GitHub Issues](https://github.com/mrchevyceleb/claude-agents-tui/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/mrchevyceleb/claude-agents-tui/discussions)
+- **Twitter**: [@mrchevyceleb](https://twitter.com/mrchevyceleb)
 
 ---
 

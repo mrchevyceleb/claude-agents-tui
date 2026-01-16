@@ -1,6 +1,6 @@
 #!/bin/bash
-# Claude Agent Monitor - Installation Script
-# https://github.com/yourusername/claude-agent-monitor
+# Claude Agents TUI - Installation Script
+# https://github.com/yourusername/claude-agents-tui
 
 set -e
 
@@ -12,7 +12,7 @@ NC='\033[0m'
 
 echo -e "${BOLD}${CYAN}"
 echo "╔════════════════════════════════════════════════════╗"
-echo "║   🤖 Claude Agent Monitor - Installation         ║"
+echo "║   🤖 Claude Agents TUI - Installation         ║"
 echo "╚════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 
@@ -85,5 +85,5 @@ echo -e "  ${BOLD}agents list${NC}       - Quick status check"
 echo -e "  ${BOLD}agents kill <id>${NC}  - Stop a running agent"
 echo -e "  ${BOLD}agents test${NC}       - Test notifications"
 echo ""
-echo -e "Documentation: ${CYAN}https://github.com/yourusername/claude-agent-monitor${NC}"
+echo -e "Documentation: ${CYAN}https://github.com/yourusername/claude-agents-tui${NC}"
 echo ""
