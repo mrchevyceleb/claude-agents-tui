@@ -8,6 +8,11 @@ param(
     [string]$AgentId
 )
 
+# Fix Unicode output for Windows console
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+chcp 65001 | Out-Null
+
 # Configuration - Check multiple possible locations
 $PossibleAgentDirs = @(
     "$env:TEMP\claude",
