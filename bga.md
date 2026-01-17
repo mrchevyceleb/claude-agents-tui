@@ -31,13 +31,30 @@ When user runs `/bga <task>`:
    - `prompt`: The user's full task description
    - `description`: Your short 3-5 word title
 
-3. After launching, save metadata file using Bash:
-   ```bash
-   echo "TITLE: [your short title]" > /tmp/agent-meta-[agent_id].txt
-   echo "STARTED: $(date '+%H:%M:%S')" >> /tmp/agent-meta-[agent_id].txt
-   echo "TASK: [first 100 chars of task]" >> /tmp/agent-meta-[agent_id].txt
+3. **CRITICAL**: After the Task tool returns, you MUST extract the agent_id from the output_file path and create a metadata file. The agent_id is the filename without extension (e.g., "a17e914" from "C:\...\tasks\a17e914.output").
+
+   Create metadata file using Bash:
+
+   **On Windows (PowerShell):**
+   ```powershell
+   $agentId = "[agent_id_from_output_file]"
+   @"
+TITLE: [your short title]
+STARTED: $(Get-Date -Format 'HH:mm:ss')
+TASK: [first 100 chars of task]
+"@ | Out-File -FilePath "$env:TEMP\agent-meta-$agentId.txt" -Encoding utf8 -NoNewline
    ```
-   Where [agent_id] is extracted from the output_file path (e.g., "a17e914" from ".../a17e914.output")
+
+   **On macOS/Linux:**
+   ```bash
+   cat > /tmp/agent-meta-[agent_id].txt << 'EOF'
+TITLE: [your short title]
+STARTED: $(date '+%H:%M:%S')
+TASK: [first 100 chars of task]
+EOF
+   ```
+
+   **Important**: Always verify the agent_id was extracted correctly before creating the metadata file. If the Task tool doesn't return an output_file, the metadata creation will fail.
 
 4. Respond with brief confirmation:
    ```
