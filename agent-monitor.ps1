@@ -792,9 +792,26 @@ function Watch-Agents {
                 # Detail mode (D was pressed, waiting for number)
                 if ($waitingForDetail) {
                     $waitingForDetail = $false
+                    # Map keys to agent index
+                    $numberIndex = -1
+
+                    # Check KeyChar first (most reliable)
                     if ($key.KeyChar -ge '1' -and $key.KeyChar -le '9') {
-                        $index = [int]$key.KeyChar - [int]'1'
-                        Show-AgentDetails -Index $index
+                        $numberIndex = [int]$key.KeyChar - [int]'1'
+                    }
+                    # Check Key enum values (D1-D9)
+                    elseif ($key.Key -eq 'D1') { $numberIndex = 0 }
+                    elseif ($key.Key -eq 'D2') { $numberIndex = 1 }
+                    elseif ($key.Key -eq 'D3') { $numberIndex = 2 }
+                    elseif ($key.Key -eq 'D4') { $numberIndex = 3 }
+                    elseif ($key.Key -eq 'D5') { $numberIndex = 4 }
+                    elseif ($key.Key -eq 'D6') { $numberIndex = 5 }
+                    elseif ($key.Key -eq 'D7') { $numberIndex = 6 }
+                    elseif ($key.Key -eq 'D8') { $numberIndex = 7 }
+                    elseif ($key.Key -eq 'D9') { $numberIndex = 8 }
+
+                    if ($numberIndex -ge 0) {
+                        Show-AgentDetails -Index $numberIndex
                     }
                     break
                 }
@@ -889,11 +906,28 @@ function Watch-Agents {
                         }
                         break
                     }
+                    'D1' { Show-QuickView -Index 0; break }
+                    'D2' { Show-QuickView -Index 1; break }
+                    'D3' { Show-QuickView -Index 2; break }
+                    'D4' { Show-QuickView -Index 3; break }
+                    'D5' { Show-QuickView -Index 4; break }
+                    'D6' { Show-QuickView -Index 5; break }
+                    'D7' { Show-QuickView -Index 6; break }
+                    'D8' { Show-QuickView -Index 7; break }
+                    'D9' { Show-QuickView -Index 8; break }
                     default {
                         # Number keys 1-9 for quick view
+                        # Check both KeyChar and Key enum
+                        $numberIndex = -1
                         if ($key.KeyChar -ge '1' -and $key.KeyChar -le '9') {
-                            $index = [int]$key.KeyChar - [int]'1'
-                            Show-QuickView -Index $index
+                            $numberIndex = [int]$key.KeyChar - [int]'1'
+                        } elseif ($key.Key -match '^D(\d)$') {
+                            # Handle D1-D9 key enum values
+                            $numberIndex = [int]$matches[1] - 1
+                        }
+
+                        if ($numberIndex -ge 0) {
+                            Show-QuickView -Index $numberIndex
                         }
                     }
                 }
