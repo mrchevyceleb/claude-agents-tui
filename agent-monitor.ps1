@@ -132,6 +132,10 @@ function Get-ProgressInfo {
     }
 
     $content = Get-Content $OutputFile -Raw -ErrorAction SilentlyContinue
+    if (-not $content) {
+        return @{ ToolCount = 0; LastTool = "-"; LastText = "" }
+    }
+
     $toolMatches = [regex]::Matches($content, '"tool_use"')
     $toolCount = $toolMatches.Count
 
