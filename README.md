@@ -74,22 +74,44 @@
 
 ---
 
-### macOS Installation
+### ⚡ One-Click Installation
 
+**macOS:**
 ```bash
-# Clone the repository
+curl -fsSL https://raw.githubusercontent.com/mrchevyceleb/claude-agents-tui/main/install.sh | bash
+```
+
+**Windows:**
+```powershell
+iex (irm https://raw.githubusercontent.com/mrchevyceleb/claude-agents-tui/main/install.ps1)
+```
+
+That's it! The installer will:
+1. Download all necessary files from GitHub
+2. Install to `~/.claude/scripts/` (macOS) or `%USERPROFILE%\.claude\scripts\` (Windows)
+3. Install the `/bga` skill to `~/.claude/commands/`
+4. Set up PATH and shell aliases
+5. Install optional notification tools
+
+---
+
+### Alternative: Clone and Install
+
+If you prefer to review the code first:
+
+**macOS:**
+```bash
 git clone https://github.com/mrchevyceleb/claude-agents-tui.git
 cd claude-agents-tui
-
-# Run the installer
 ./install.sh
 ```
 
-The installer will:
-1. Copy `agent-monitor.sh` to `~/.claude/scripts/`
-2. Copy `bga.md` to `~/.claude/commands/`
-3. Add the `agents` alias to your shell config
-4. Install `terminal-notifier` for better notifications
+**Windows:**
+```powershell
+git clone https://github.com/mrchevyceleb/claude-agents-tui.git
+cd claude-agents-tui
+.\install.ps1
+```
 
 #### Manual Installation (macOS)
 
@@ -116,51 +138,18 @@ brew install terminal-notifier
 
 ---
 
-### Windows Installation
+### Optional: Enhanced Notifications
 
-```powershell
-# Clone the repository
-git clone https://github.com/mrchevyceleb/claude-agents-tui.git
-cd claude-agents-tui
-
-# Run the installer
-.\install.ps1
-```
-
-The installer will:
-1. Copy `agent-monitor.ps1` to `%USERPROFILE%\.claude\scripts\`
-2. Copy `agents.cmd` to `%USERPROFILE%\.claude\scripts\`
-3. Copy `bga.md` to `%USERPROFILE%\.claude\commands\`
-4. Add scripts directory to PATH
-5. Check for optional BurntToast module
-
-#### Manual Installation (Windows)
-
-```powershell
-# Create directories
-mkdir -Force "$env:USERPROFILE\.claude\scripts"
-mkdir -Force "$env:USERPROFILE\.claude\commands"
-
-# Copy files
-Copy-Item agent-monitor.ps1 "$env:USERPROFILE\.claude\scripts\"
-Copy-Item agents.cmd "$env:USERPROFILE\.claude\scripts\"
-Copy-Item bga.md "$env:USERPROFILE\.claude\commands\"
-
-# Add to PATH (run once)
-$scriptsPath = "$env:USERPROFILE\.claude\scripts"
-$currentPath = [Environment]::GetEnvironmentVariable('Path', 'User')
-if ($currentPath -notlike "*$scriptsPath*") {
-    [Environment]::SetEnvironmentVariable('Path', "$currentPath;$scriptsPath", 'User')
-}
-
-# Restart terminal for PATH changes to take effect
-```
-
-#### Optional: Better Windows Notifications
-
+**Windows:**
 ```powershell
 # Install BurntToast for richer notifications
 Install-Module -Name BurntToast -Scope CurrentUser
+```
+
+**macOS:**
+```bash
+# Install terminal-notifier for better notifications
+brew install terminal-notifier
 ```
 
 ---

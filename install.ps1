@@ -1,11 +1,13 @@
-# Claude Agents TUI - Windows Installer
-# Installs the background agent dashboard and /bga skill
+# Claude Agents TUI - Windows One-Click Installer
+# Downloads and installs everything from GitHub
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "  Claude Agents TUI - Windows Install  " -ForegroundColor White
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
+
+$repoUrl = "https://raw.githubusercontent.com/mrchevyceleb/claude-agents-tui/main"
 
 # Create directories
 $scriptsDir = "$env:USERPROFILE\.claude\scripts"
@@ -17,15 +19,30 @@ New-Item -ItemType Directory -Path $commandsDir -Force | Out-Null
 Write-Host "      Created: $scriptsDir" -ForegroundColor Green
 Write-Host "      Created: $commandsDir" -ForegroundColor Green
 
-# Copy files
+# Download and copy files
 Write-Host ""
-Write-Host "[2/5] Copying files..." -ForegroundColor Yellow
-Copy-Item "agent-monitor.ps1" "$scriptsDir\agent-monitor.ps1" -Force
-Write-Host "      Copied: agent-monitor.ps1" -ForegroundColor Green
-Copy-Item "agents.cmd" "$scriptsDir\agents.cmd" -Force
-Write-Host "      Copied: agents.cmd" -ForegroundColor Green
-Copy-Item "bga.md" "$commandsDir\bga.md" -Force
-Write-Host "      Copied: bga.md (skill)" -ForegroundColor Green
+Write-Host "[2/5] Downloading files from GitHub..." -ForegroundColor Yellow
+
+try {
+    # Download agent-monitor.ps1
+    Write-Host "      Downloading agent-monitor.ps1..." -ForegroundColor DarkGray
+    Invoke-WebRequest -Uri "$repoUrl/agent-monitor.ps1" -OutFile "$scriptsDir\agent-monitor.ps1"
+    Write-Host "      Downloaded: agent-monitor.ps1" -ForegroundColor Green
+
+    # Download agents.cmd
+    Write-Host "      Downloading agents.cmd..." -ForegroundColor DarkGray
+    Invoke-WebRequest -Uri "$repoUrl/agents.cmd" -OutFile "$scriptsDir\agents.cmd"
+    Write-Host "      Downloaded: agents.cmd" -ForegroundColor Green
+
+    # Download bga.md
+    Write-Host "      Downloading bga.md..." -ForegroundColor DarkGray
+    Invoke-WebRequest -Uri "$repoUrl/bga.md" -OutFile "$commandsDir\bga.md"
+    Write-Host "      Downloaded: bga.md (skill)" -ForegroundColor Green
+} catch {
+    Write-Host "      ERROR: Failed to download files" -ForegroundColor Red
+    Write-Host "      $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
+}
 
 # Add to PATH
 Write-Host ""
