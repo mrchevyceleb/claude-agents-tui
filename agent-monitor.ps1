@@ -188,9 +188,38 @@ function Get-TaskTitle {
         } catch { }
     }
 
-    # Ultimate fallback: project name + task
+    # Ultimate fallback: project name + start time to distinguish multiple tasks
     if ($projectName -and $projectName -ne "Task") {
-        return "$projectName task"
+        # Try to get start time from metadata
+        $metaFile = Join-Path $META_DIR "agent-meta-$AgentId.txt"
+        $startTime = $null
+        if (Test-Path $metaFile) {
+            $content = Get-Content $metaFile -ErrorAction SilentlyContinue
+            $timeLine = $content | Where-Object { $_ -match "^STARTED:" }
+            if ($timeLine) {
+                $startTime = ($timeLine -replace "^STARTED:\s*", "").Trim()
+            }
+        }
+
+        # If we have start time, use it to make the title more specific
+        if ($startTime) {
+            # Extract just HH:MM
+            if ($startTime -match "(\d{2}:\d{2})") {
+                return "$projectName $($matches[1])"
+            }
+        }
+
+        # If no start time, use file creation time
+        if ($OutputFile -and (Test-Path $OutputFile)) {
+            try {
+                $fileTime = (Get-Item $OutputFile).CreationTime
+                $timeStr = $fileTime.ToString("HH:mm")
+                return "$projectName $timeStr"
+            } catch { }
+        }
+
+        # Absolute fallback
+        return "$projectName work"
     }
 
     return $null

@@ -154,9 +154,32 @@ get_task_title() {
         fi
     fi
 
-    # Ultimate fallback: project name + task
+    # Ultimate fallback: project name + start time to distinguish multiple tasks
     if [ -n "$project_name" ] && [ "$project_name" != "Task" ]; then
-        echo "$project_name task"
+        # Try to get start time from metadata
+        local meta_file="${META_DIR}/agent-meta-${agent_id}.txt"
+        local start_time=""
+        if [ -f "$meta_file" ]; then
+            start_time=$(grep "^STARTED:" "$meta_file" 2>/dev/null | sed 's/^STARTED: //' | cut -d':' -f1-2)
+        fi
+
+        # If we have start time, use it to make the title more specific
+        if [ -n "$start_time" ]; then
+            echo "$project_name $start_time"
+            return
+        fi
+
+        # If no start time, use file modification time
+        if [ -n "$output_file" ] && [ -f "$output_file" ]; then
+            local file_time=$(stat -f "%Sm" -t "%H:%M" "$output_file" 2>/dev/null)
+            if [ -n "$file_time" ]; then
+                echo "$project_name $file_time"
+                return
+            fi
+        fi
+
+        # Absolute fallback
+        echo "$project_name work"
         return
     fi
 
