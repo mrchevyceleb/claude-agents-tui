@@ -3,7 +3,7 @@
 **A beautiful terminal dashboard for monitoring Claude Code background agents in real-time.**
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg)
+![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-lightgrey.svg)
 
 > Transform your Claude Code workflow with live monitoring, progress tracking, and instant notifications when background agents complete their tasks.
 
@@ -50,11 +50,19 @@
 
 ### Prerequisites
 
-- **macOS** (tested on macOS 15+)
-- **Claude Code** CLI installed
-- **zsh** or **bash** shell
+**macOS:**
+- macOS 15+
+- Claude Code CLI installed
+- zsh or bash shell
 
-### Installation
+**Windows:**
+- Windows 10/11
+- Claude Code CLI installed
+- PowerShell 5.1+
+
+---
+
+### macOS Installation
 
 ```bash
 # Clone the repository
@@ -71,9 +79,7 @@ The installer will:
 3. Add the `agents` alias to your shell config
 4. Install `terminal-notifier` for better notifications
 
-### Manual Installation
-
-If you prefer to install manually:
+#### Manual Installation (macOS)
 
 ```bash
 # Create directories
@@ -94,6 +100,41 @@ source ~/.zshrc
 
 # Install terminal-notifier (optional, for better notifications)
 brew install terminal-notifier
+```
+
+---
+
+### Windows Installation
+
+```powershell
+# Clone the repository
+git clone https://github.com/mrchevyceleb/claude-agents-tui.git
+cd claude-agents-tui
+
+# Create directories
+mkdir -Force "$env:USERPROFILE\.claude\scripts"
+mkdir -Force "$env:USERPROFILE\.claude\commands"
+
+# Copy files
+Copy-Item agent-monitor.ps1 "$env:USERPROFILE\.claude\scripts\"
+Copy-Item agents.cmd "$env:USERPROFILE\.claude\scripts\"
+Copy-Item bga.md "$env:USERPROFILE\.claude\commands\"
+
+# Add to PATH (run once)
+$scriptsPath = "$env:USERPROFILE\.claude\scripts"
+$currentPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+if ($currentPath -notlike "*$scriptsPath*") {
+    [Environment]::SetEnvironmentVariable('Path', "$currentPath;$scriptsPath", 'User')
+}
+
+# Restart terminal for PATH changes to take effect
+```
+
+#### Optional: Better Windows Notifications
+
+```powershell
+# Install BurntToast for richer notifications
+Install-Module -Name BurntToast -Scope CurrentUser
 ```
 
 ---
@@ -294,7 +335,7 @@ Contributions are welcome! Here's how:
 ### Ideas for Contributions
 
 - [ ] Linux support
-- [ ] Windows (WSL) support
+- [x] Windows support (native PowerShell)
 - [ ] Custom themes/color schemes
 - [ ] Export agent logs to file
 - [ ] Web-based dashboard
