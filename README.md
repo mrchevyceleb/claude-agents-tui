@@ -123,6 +123,20 @@ brew install terminal-notifier
 git clone https://github.com/mrchevyceleb/claude-agents-tui.git
 cd claude-agents-tui
 
+# Run the installer
+.\install.ps1
+```
+
+The installer will:
+1. Copy `agent-monitor.ps1` to `%USERPROFILE%\.claude\scripts\`
+2. Copy `agents.cmd` to `%USERPROFILE%\.claude\scripts\`
+3. Copy `bga.md` to `%USERPROFILE%\.claude\commands\`
+4. Add scripts directory to PATH
+5. Check for optional BurntToast module
+
+#### Manual Installation (Windows)
+
+```powershell
 # Create directories
 mkdir -Force "$env:USERPROFILE\.claude\scripts"
 mkdir -Force "$env:USERPROFILE\.claude\commands"
@@ -195,12 +209,12 @@ agents help
 
 ### Launching Background Agents
 
-Use the `/bga` skill from within Claude Code conversations:
+**IMPORTANT:** Use the `/bga` skill to get descriptive task titles in the dashboard!
 
 ```
 You: /bga research the top 5 AI coding assistants and compare pricing
 
-Claude: Agent launched: Research AI assistants
+Claude: 🚀 Agent launched: Research AI assistants
 ```
 
 The agent will:
@@ -208,6 +222,11 @@ The agent will:
 - Show up in the dashboard with a clear title
 - Send you a notification when done
 - Track progress and tool usage
+
+**Without `/bga`:** Tasks show as "Assistant 10:45" or "live Dev Server"
+**With `/bga`:** Tasks show as "Research AI assistants" or "Refactor auth system"
+
+The `/bga` skill creates metadata files that tell the dashboard what each agent is actually doing.
 
 ---
 
