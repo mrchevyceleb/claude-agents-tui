@@ -1,52 +1,64 @@
-# 🤖 Claude Agents TUI
+# Claude Agents TUI
 
 **A beautiful terminal dashboard for monitoring Claude Code background agents in real-time.**
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-lightgrey.svg)
+![Version](https://img.shields.io/badge/version-2.0-green.svg)
 
 > Transform your Claude Code workflow with live monitoring, progress tracking, and instant notifications when background agents complete their tasks.
 
 ---
 
-## ✨ Features
+## Features
 
-- 📊 **Real-time Dashboard** - Beautiful table view with live updates every 2 seconds
-- 🎯 **Task Titles** - See what each agent is actually doing, not just cryptic IDs
-- 📍 **Project Context** - Know which codebase each agent is working in
-- ⏱️ **Time Tracking** - Monitor how long agents have been running
-- 📈 **Progress Bars** - Visual progress based on tool usage
-- 🔔 **macOS Notifications** - Get notified when agents complete (with sound!)
-- 🎨 **Color-coded Status** - Green for running, yellow for done
-- 🔪 **Kill Command** - Stop runaway agents instantly
-- 📝 **Live Action Updates** - See which tool each agent is currently using
+### Core Features
+- **Real-time Dashboard** - Beautiful table view with configurable refresh rate (1-10s)
+- **Task Titles** - See what each agent is actually doing, not just cryptic IDs
+- **Project Context** - Know which codebase each agent is working in
+- **Time Tracking** - Monitor how long agents have been running
+- **Progress Bars** - Visual progress based on tool usage
+- **Color-coded Status** - Green for running, yellow for done, red for failed
 
----
-
-## 📸 Preview
-
-```
-╔═════════════════════════════════════════════════════════════════════════════════════════════════════╗
-║                🤖 CLAUDE CODE BACKGROUND AGENTS                          🔔 NOTIFY ON             ║
-╠═════════════════════════════════════════════════════════════════════════════════════════════════════╣
-║ TASK                         │ PROJECT    │ STATUS   │ TIME    │ PROGRESS     │ ACTION         ║
-╠══════════════════════════════╪════════════╪══════════╪═════════╪══════════════╪════════════════╣
-║ Research AI avatar pricing   │ Assistant  │ ⠋ RUN    │ 2m 15s  │ ████░░░░░░   │ WebSearch      ║
-║                              │            │          │         │              │                ║
-║ Scrape API docs              │ v-life     │ ⠙ RUN    │ 1m 03s  │ ██░░░░░░░░   │ Read           ║
-║                              │            │          │         │              │                ║
-║ Generate startup ideas       │ Assistant  │ ✓ DONE   │ 3m 45s  │ ██████████   │ -              ║
-║                              │            │          │         │              │                ║
-╠═════════════════════════════════════════════════════════════════════════════════════════════════════╣
-║  SUMMARY: ● 2 running   ○ 1 completed   Total: 3                                                 ║
-╠═════════════════════════════════════════════════════════════════════════════════════════════════════╣
-║  17:09:16   │   Refresh: 2s   │   Kill: agents kill <id>   │   Ctrl+C exit                       ║
-╚═════════════════════════════════════════════════════════════════════════════════════════════════════╝
-```
+### v2.0 New Features
+- **Error Detection** - Automatic success/failed/killed status detection
+- **Sound Notifications** - Audio alert when agents complete (different sound for failures)
+- **Quick View (1-9)** - Press a number to preview agent output inline
+- **Agent Details (D+1-9)** - Full agent details panel with all metadata
+- **Copy Agent ID (C)** - One-key copy to clipboard for kill commands
+- **Filter View (R/F/A)** - Toggle between Running/Finished/All agents
+- **Pagination (PgUp/PgDn)** - Browse through all agents, 10 per page
+- **Adjustable Refresh (+/-)** - Change refresh rate on the fly (1s to 10s)
+- **Success Rate** - Summary shows success/fail counts
+- **Completion Time** - Shows actual duration for completed agents
 
 ---
 
-## 🚀 Quick Start
+## Preview
+
+```
++============================================================================================================+
+|                              CLAUDE CODE BACKGROUND AGENTS                               |
++------------------------------------------------------------------------------------------------------------+
+|  [N] Notify: ON   [R/F/A] Filter: ALL   [+/-] Speed: 2s   [C] Copy   [Q] Quit               |
+|  [1-9] Quick view   [D]+[1-9] Details   [PgUp/PgDn] Page                                     |
++============================================================================================================+
+| # | TASK                       | PROJECT    | STATUS     | TIME      | PROGRESS     | ACTION       |
++===+============================+============+============+===========+==============+==============+
+| 1 | Research AI pricing        | Assistant  | * RUNNING  | 2m 15s    | ####......   | WebSearch    |
+| 2 | Scrape API docs            | v-life     | * RUNNING  | 1m 03s    | ##........   | Read         |
+| 3 | Generate startup ideas     | Assistant  | V SUCCESS  | 3m 45s    | ##########   | -            |
+| 4 | Fix auth bug               | r-link     | X FAILED   | 5m 12s    | ########..   | -            |
++============================================================================================================+
+|  SUMMARY: * 2 running   o 2 done (1V 1X)   Total: 4   Page 1/1                               |
++============================================================================================================+
+|  17:09:16  |  Refresh: 2s  |  Launch: /bga <task>  |  Kill: agents kill <id>               |
++============================================================================================================+
+```
+
+---
+
+## Quick Start
 
 ### Prerequisites
 
@@ -139,12 +151,15 @@ Install-Module -Name BurntToast -Scope CurrentUser
 
 ---
 
-## 📖 Usage
+## Usage
 
 ### Basic Commands
 
 ```bash
-# Start the live dashboard with notifications (recommended)
+# Start the live dashboard (default)
+agents
+
+# Start with notifications enabled
 agents n
 
 # Show current status (one-time)
@@ -159,15 +174,24 @@ agents tail <agent_id>
 # Kill a running agent
 agents kill <agent_id>
 
-# Launch tmux split-screen dashboard
-agents tmux
-
-# Test notifications
-agents test
-
-# Clean up old agent files (>2 hours)
-agents cleanup
+# Show help
+agents help
 ```
+
+### Keyboard Shortcuts (Watch Mode)
+
+| Key | Action |
+|-----|--------|
+| `N` | Toggle notifications on/off |
+| `R` | Filter: Running agents only |
+| `F` | Filter: Finished agents only |
+| `A` | Filter: All agents |
+| `+` / `-` | Increase/decrease refresh rate (1-10s) |
+| `C` | Copy agent ID to clipboard |
+| `1-9` | Quick view: Preview agent output |
+| `D` + `1-9` | Show full agent details |
+| `PgUp` / `PgDn` | Navigate pages |
+| `Q` / `Esc` | Quit dashboard |
 
 ### Launching Background Agents
 
@@ -176,7 +200,7 @@ Use the `/bga` skill from within Claude Code conversations:
 ```
 You: /bga research the top 5 AI coding assistants and compare pricing
 
-Claude: 🚀 Agent launched: Research AI assistants
+Claude: Agent launched: Research AI assistants
 ```
 
 The agent will:
@@ -187,7 +211,7 @@ The agent will:
 
 ---
 
-## 🎯 Use Cases
+## Use Cases
 
 ### Development Workflow
 
@@ -196,7 +220,7 @@ The agent will:
 claude
 
 # Terminal 2: Agent monitor dashboard
-agents n
+agents
 ```
 
 Launch multiple agents in parallel and monitor them all:
@@ -208,13 +232,13 @@ Launch multiple agents in parallel and monitor them all:
 
 ```
 You: /bga scrape the pricing page at example.com and summarize it
-Claude: 🚀 Agent launched: Scrape pricing page
+Claude: Agent launched: Scrape pricing page
 
 You: /bga refactor the utils folder to use TypeScript
-Claude: 🚀 Agent launched: Refactor to TypeScript
+Claude: Agent launched: Refactor to TypeScript
 
 You: /bga run comprehensive tests on the API endpoints
-Claude: 🚀 Agent launched: Run API tests
+Claude: Agent launched: Run API tests
 ```
 
 All three agents run in parallel, visible in the dashboard with:
@@ -223,27 +247,38 @@ All three agents run in parallel, visible in the dashboard with:
 - Project context
 - Time elapsed
 - Current tool being used
+- Success/failure status when complete
 
 ---
 
-## ⚙️ How It Works
+## How It Works
 
 ### Agent Detection
 
-The monitor scans `/private/tmp/claude/` for agent output files and displays:
-- **Title**: From metadata file `/tmp/agent-meta-<id>.txt`
+The monitor scans temp directories for agent output files and displays:
+- **Title**: From metadata file or extracted from project path
 - **Project**: Extracted from output file path
-- **Status**: Based on file modification time (active = modified in last 60s)
+- **Status**: Running/Success/Failed/Killed based on file activity and error detection
 - **Progress**: Calculated from tool usage count
 - **Action**: Last tool used by the agent
+
+### Status Detection
+
+| Status | Color | Meaning |
+|--------|-------|---------|
+| RUNNING | Green | Agent actively working (file modified <60s ago) |
+| SUCCESS | Green | Agent completed without errors |
+| FAILED | Red | Agent encountered errors |
+| KILLED | Yellow | Agent was manually terminated |
 
 ### Notifications
 
 When an agent transitions from "running" to "done":
-1. State is tracked in `/tmp/agent-monitor-state`
+1. State is tracked in temp files
 2. Completion is detected on next refresh
-3. macOS notification sent via `terminal-notifier` (or `osascript` fallback)
-4. Notification includes task title (if available) or agent ID
+3. Sound plays (different for success vs failure)
+4. Visual notification sent
+5. Status (success/failed) determined from output analysis
 
 ### Metadata Files
 
@@ -258,25 +293,27 @@ The `/bga` skill automatically creates metadata files:
 
 ---
 
-## 🎨 Customization
+## Customization
 
-### Change Refresh Rate
+### Change Default Refresh Rate
 
-Edit `agent-monitor.sh`:
+Edit the script and change:
 
-```bash
-REFRESH_RATE=2  # Change to desired seconds
+```powershell
+$script:REFRESH_RATE = 2  # Change to desired seconds (1-10)
 ```
+
+Or use `+`/`-` keys during runtime.
 
 ### Modify Progress Bar
 
-Progress is estimated based on tool count. Adjust in `progress_bar()`:
+Progress is estimated based on tool count. Adjust in the script:
 
-```bash
-local max=20  # Assume ~20 tools for 100% progress
+```powershell
+$max = 20  # Assume ~20 tools for 100% progress
 ```
 
-### Customize Notification Sound
+### Customize Notification Sound (macOS)
 
 Edit the `send_notification()` function:
 
@@ -288,7 +325,7 @@ Available sounds: `Basso`, `Blow`, `Bottle`, `Frog`, `Funk`, `Glass`, `Hero`, `M
 
 ---
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### "command not found: agents"
 
@@ -300,7 +337,7 @@ source ~/.zshrc  # or ~/.bashrc
 ### Notifications not working
 
 **Check permissions:**
-1. Go to **System Settings → Notifications**
+1. Go to **System Settings > Notifications**
 2. Find **terminal-notifier** or **Script Editor**
 3. Enable **Allow Notifications**
 
@@ -311,7 +348,7 @@ agents test
 
 ### Progress bar not updating
 
-Progress is based on tool usage. Very simple tasks (like "count to 10") may use few tools and show minimal progress. This is expected behavior.
+Progress is based on tool usage. Very simple tasks may use few tools and show minimal progress. This is expected behavior.
 
 ### Agent not showing in dashboard
 
@@ -320,9 +357,15 @@ Progress is based on tool usage. Very simple tasks (like "count to 10") may use 
 2. No metadata file created (use `/bga` skill to launch)
 3. Agent running in different project (check with `agents list`)
 
+### Task titles showing as IDs
+
+If you see IDs like "b39987a..." instead of task titles:
+1. Make sure to launch agents using `/bga` command (creates metadata)
+2. The dashboard will fall back to project name + "task" if no metadata
+
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Here's how:
 
@@ -336,24 +379,32 @@ Contributions are welcome! Here's how:
 
 - [ ] Linux support
 - [x] Windows support (native PowerShell)
+- [x] Error detection (success/failed status)
+- [x] Sound notifications
+- [x] Quick view agent output
+- [x] Agent details panel
+- [x] Copy agent ID to clipboard
+- [x] Filter views (running/finished/all)
+- [x] Pagination for large agent lists
+- [x] Adjustable refresh rate
+- [x] Success rate tracking
 - [ ] Custom themes/color schemes
 - [ ] Export agent logs to file
 - [ ] Web-based dashboard
 - [ ] Agent priority levels
-- [ ] Estimated completion time
 - [ ] Agent dependencies (run B after A completes)
 - [ ] Slack/Discord notifications
 - [ ] Agent retry on failure
 
 ---
 
-## 📝 License
+## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Built for the [Claude Code](https://claude.com/claude-code) community
 - Inspired by htop, k9s, and other great TUI tools
@@ -361,14 +412,13 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-## 📬 Support
+## Support
 
 - **Issues**: [GitHub Issues](https://github.com/mrchevyceleb/claude-agents-tui/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/mrchevyceleb/claude-agents-tui/discussions)
-- **Twitter**: [@mrchevyceleb](https://twitter.com/mrchevyceleb)
 
 ---
 
-**Made with ❤️ for the Claude Code community**
+**Made with love for the Claude Code community**
 
-*Star ⭐ this repo if you find it useful!*
+*Star this repo if you find it useful!*
