@@ -109,7 +109,8 @@ function Get-TaskTitle {
         }
     }
 
-    # Fallback: extract from project folder path
+    # Get project name for later use
+    $projectName = "Task"
     if ($OutputFile -and (Test-Path $OutputFile)) {
         $projectPath = Split-Path (Split-Path $OutputFile -Parent) -Parent
         $folderName = Split-Path $projectPath -Leaf
@@ -117,18 +118,79 @@ function Get-TaskTitle {
         # Clean up folder name: C--KG-APPS-r-link-live -> r-link-live
         $cleanName = $folderName -replace '^C--', '' -replace '^[A-Z]--', ''
         $segments = $cleanName -split '-'
-
-        # Get last meaningful segment (project name)
         $projectName = $segments[-1]
-        if ($projectName.Length -gt 2) {
-            return "$projectName task"
+        if ($projectName.Length -le 2 -and $segments.Length -gt 1) {
+            $projectName = $segments[-2]
         }
+    }
 
-        # Try second to last if last is too short
-        if ($segments.Length -gt 1) {
-            $projectName = $segments[-2..-1] -join "-"
-            return "$projectName task"
-        }
+    # Try to detect task type from output content
+    if ($OutputFile -and (Test-Path $OutputFile)) {
+        try {
+            $content = Get-Content $OutputFile -Head 50 -ErrorAction SilentlyContinue
+            $contentText = $content -join "`n"
+
+            # Detect dev server
+            if ($contentText -match "VITE|vite|Vite.*ready|localhost:\d+|dev server|HMR") {
+                return "$projectName Dev Server"
+            }
+
+            # Detect build process
+            if ($contentText -match "build|Building|compiled|webpack|rollup|esbuild") {
+                return "$projectName Build"
+            }
+
+            # Detect test runner
+            if ($contentText -match "test|jest|vitest|mocha|PASS|FAIL|spec\.") {
+                return "$projectName Tests"
+            }
+
+            # Detect linting
+            if ($contentText -match "eslint|lint|prettier|formatting") {
+                return "$projectName Lint"
+            }
+
+            # Detect deployment
+            if ($contentText -match "deploy|vercel|netlify|supabase|firebase") {
+                return "$projectName Deploy"
+            }
+
+            # Detect database operations
+            if ($contentText -match "migration|database|SQL|prisma|drizzle") {
+                return "$projectName Database"
+            }
+
+            # Detect git operations
+            if ($contentText -match "git |commit|push|pull|merge|branch") {
+                return "$projectName Git"
+            }
+
+            # Detect install/dependency operations
+            if ($contentText -match "npm install|pnpm|yarn add|installing|dependencies") {
+                return "$projectName Install"
+            }
+
+            # Look for tool_use patterns to detect activity type
+            $lastContent = Get-Content $OutputFile -Tail 30 -ErrorAction SilentlyContinue
+            $lastText = $lastContent -join "`n"
+
+            if ($lastText -match '"name":"(\w+)"') {
+                $lastTool = $matches[1]
+                switch -Regex ($lastTool) {
+                    "Read|Glob|Grep" { return "$projectName Explore" }
+                    "Edit|Write" { return "$projectName Edit" }
+                    "Bash" { return "$projectName Shell" }
+                    "WebFetch|WebSearch" { return "$projectName Research" }
+                    "Task" { return "$projectName Subtask" }
+                }
+            }
+
+        } catch { }
+    }
+
+    # Ultimate fallback: project name + task
+    if ($projectName -and $projectName -ne "Task") {
+        return "$projectName task"
     }
 
     return $null
